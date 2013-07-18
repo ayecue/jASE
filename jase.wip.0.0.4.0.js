@@ -134,16 +134,10 @@
 		},
 		
 		concat = function(a,b){
-			if (getType(a) == 'array'){
-				push.apply(a,b);
-				
-				return a;
-			}
+			var concated;
 			
-			var concated = [];
-			
-			push.apply(concated,a);
-			push.apply(concated,b);
+			getType(a) == 'array' ? (concated = a) : ((concated = []) && push.apply(concated,a));
+			getType(b) == 'array' ? (concated = concated.concat(b)) : push.apply(concated,b);
 			
 			return concated;
 		},
