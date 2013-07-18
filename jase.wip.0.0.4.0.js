@@ -1,5 +1,5 @@
 (function(global){
-  'use strict';
+	'use strict';
 
 	var /**
 		 * Variables
@@ -19,6 +19,7 @@
 		rx = RegExp,
 		doc = document,
 		slice = [].slice,
+		push = [].push,
 		stringClassName = 'className',
 		stringTagName = 'tagName',
 		stringAttribute = 'attribute',
@@ -38,7 +39,7 @@
 			'visited' : stringStateRef+'Visited'
 		},
 		supportGetElementsByClassName = !!doc.getElementsByClassName,
-		supportQuerySelectorAll = false,// !!doc.querySelectorAll,
+		supportQuerySelectorAll = !!doc.querySelectorAll,
 
 		/**
 		 *	Regular Expressions
@@ -125,22 +126,26 @@
 		toArray = (!browser.MSIE || parseInt(browser.version) > 7) && slice ? function(obj) {
 			return slice.call(obj);
 		} : function(obj) {
-			return forEach(obj, function(index, item) {
-				this.result.push(item);
-			}, []);
+			var toSlice = [];
+			
+			push.apply(toSlice,obj);
+			
+			return toSlice;
 		},
 		
 		concat = function(a,b){
-			if (!a.length) {
-				return b;
-			} else if (!b.length) {
+			if (getType(a) == 'array'){
+				push.apply(a,b);
+				
 				return a;
-			} else if (getType(a) === 'array') {
-			
-				return getType(b) === 'array' ? a.concat(b) : a.concat(toArray(b));
 			}
 			
-			return toArray(a).concat(toArray(b));
+			var concated = [];
+			
+			push.apply(concated,a);
+			push.apply(concated,b);
+			
+			return concated;
 		},
 
 		/**
@@ -169,9 +174,9 @@
 		 */
 		extend = function() {
 			var args = toArray(arguments),
-			last = args.length - 1,
-			nil = true,
-			src = args.shift() || {};
+				last = args.length - 1,
+				nil = true,
+				src = args.shift() || {};
 			
 			getType(args[last]) === 'boolean' && (nil = args.pop());
 			
@@ -219,7 +224,7 @@
 			var matches = _context.root.getElementsByTagName(tagName || '*');
 			
 			return forEach(matches,function(_,item){
-				item['getAttribute'] && item.getAttribute(name) != null && this.result.push(item);
+				item['hasAttribute'] && item.hasAttribute(name) && this.result.push(item);
 			},[]);
 		},
 		getByAttributeEqual = supportQuerySelectorAll ? function(name,value,tagName){
@@ -384,7 +389,7 @@
 			},
 			attributeHas : function(string){
 				return forEach(_context.cache,function(_,item){
-					item['getAttribute'] && item.getAttribute(string) && this.result.push(item);
+					item['hasAttribute'] && item.hasAttribute(string) && this.result.push(item);
 				},[]);
 			},
 			attributeEqual : function(string,value){
