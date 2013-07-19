@@ -20,6 +20,13 @@
 		doc = document,
 		slice = [].slice,
 		push = [].push,
+		propertyGetElementsByClassName = 'getElementsByClassName',
+		propertyGetElementsByTagName = 'getElementsByTagName',
+		propertyGetElementById = 'getElementById',
+		propertyGetElementsByName = 'getElementsByName',
+		propertyQuerySelectorAll = 'querySelectorAll',
+		propertyHasAttribute = 'hasAttribute',
+		propertyGetAttribute = 'getAttribute',
 		stringClassName = 'className',
 		stringTagName = 'tagName',
 		stringAttribute = 'attribute',
@@ -38,8 +45,8 @@
 			'hover' : stringStateRef+'Hover',
 			'visited' : stringStateRef+'Visited'
 		},
-		supportGetElementsByClassName = !!doc.getElementsByClassName,
-		supportQuerySelectorAll = !!doc.querySelectorAll,
+		supportGetElementsByClassName = !!doc[propertyGetElementsByClassName],
+		supportQuerySelectorAll = !!doc[propertyQuerySelectorAll],
 
 		/**
 		 *	Regular Expressions
@@ -192,11 +199,11 @@
 		},
 		
 		getByClassName = supportGetElementsByClassName ? function(className){
-			return _context.root.getElementsByClassName(className);
+			return _context.root[propertyGetElementsByClassName](className);
 		} : (supportQuerySelectorAll ? function(className,tagName){
-			return _context.root.querySelectorAll(tagName+'.'+className);
+			return _context.root[propertyQuerySelectorAll](tagName+'.'+className);
 		} : function(className,tagName){
-			var matches = _context.root.getElementsByTagName(tagName || '*'),
+			var matches = _context.root[propertyGetElementsByTagName](tagName || '*'),
 				pattern = new RegExp("\\b"+className+"\\b");
 				
 			return forEach(matches,function(_,item){
@@ -204,72 +211,72 @@
 			},[]);
 		}),
 		getByID = function(id,root){
-			return (root || _context.root).getElementById(id);
+			return (root || _context.root)[propertyGetElementById](id);
 		},
 		getByTagName = function(tagName){
-			return _context.root.getElementsByTagName(tagName);
+			return _context.root[propertyGetElementsByTagName](tagName);
 		},
 		getByName = function(name){
-			return _context.root.getElementsByName(name);
+			return _context.root[propertyGetElementsByName](name);
 		},
 		getByAttributeHas = supportQuerySelectorAll ? function(name,tagName){
-			return _context.root.querySelectorAll(tagName+'['+name+']');
+			return _context.root[propertyQuerySelectorAll](tagName+'['+name+']');
 		} : function(name,tagName){
-			var matches = _context.root.getElementsByTagName(tagName || '*');
+			var matches = _context.root[propertyGetElementsByTagName](tagName || '*');
 			
 			return forEach(matches,function(_,item){
-				item['hasAttribute'] && item.hasAttribute(name) && this.result.push(item);
+				item[propertyHasAttribute] && item[propertyHasAttribute](name) && this.result.push(item);
 			},[]);
 		},
 		getByAttributeEqual = supportQuerySelectorAll ? function(name,value,tagName){
-			return _context.root.querySelectorAll(tagName+'['+name+'="'+value+'"]');
+			return _context.root[propertyQuerySelectorAll](tagName+'['+name+'="'+value+'"]');
 		} : function(name,value,tagName){
-			var matches = _context.root.getElementsByTagName(tagName || '*');
+			var matches = _context.root[propertyGetElementsByTagName](tagName || '*');
 			
 			return forEach(matches,function(_,item){
-				item['getAttribute'] && item.getAttribute(name) == value && this.result.push(item);
+				item[propertyGetAttribute] && item[propertyGetAttribute](name) == value && this.result.push(item);
 			},[]);
 		},
 		getByAttributeLike = supportQuerySelectorAll ? function(name,value,tagName){
-			return _context.root.querySelectorAll(tagName+'['+name+'~="'+value+'"]');
+			return _context.root[propertyQuerySelectorAll](tagName+'['+name+'~="'+value+'"]');
 		} : function(name,value,tagName){
-			var matches = _context.root.getElementsByTagName(tagName || '*'),
+			var matches = _context.root[propertyGetElementsByTagName](tagName || '*'),
 				content;	
 			
 			return forEach(matches,function(_,item){
-				item['getAttribute'] && (content = item.getAttribute(name)) && content.indexOf(value) != -1 && this.result.push(item);
+				item[propertyGetAttribute] && (content = item[propertyGetAttribute](name)) && content.indexOf(value) != -1 && this.result.push(item);
 			},[]);
 		},
 		getByAttributeSeperator = supportQuerySelectorAll ? function(name,value,tagName){
-			return _context.root.querySelectorAll(tagName+'['+name+'|="'+value+'"]');
+			return _context.root[propertyQuerySelectorAll](tagName+'['+name+'|="'+value+'"]');
 		} : function(name,value,tagName){
-			var matches = _context.root.getElementsByTagName(tagName || '*'),
+			var matches = _context.root[propertyGetElementsByTagName](tagName || '*'),
 				pattern = new RegExp("(^|-)"+value),
 				content;
 			
 			return forEach(matches,function(_,item){
-				item['getAttribute'] && (content = item.getAttribute(name)) && pattern.test(content) && this.result.push(item);
+				item[propertyGetAttribute] && (content = item[propertyGetAttribute](name)) && pattern.test(content) && this.result.push(item);
 			},[]);
 		},
 		getByAttributeFirst = supportQuerySelectorAll ? function(name,value,tagName){
-			return _context.root.querySelectorAll(tagName+'['+name+'|="'+value+'"]');
+			return _context.root[propertyQuerySelectorAll](tagName+'['+name+'|="'+value+'"]');
 		} : function(name,value,tagName){
-			var matches = _context.root.getElementsByTagName(tagName || '*'),
+			var matches = _context.root[propertyGetElementsByTagName](tagName || '*'),
 				content;	
 			
 			return forEach(matches,function(_,item){
-				item['getAttribute'] && (content = item.getAttribute(name)) && content.indexOf(value) == 0 && this.result.push(item);
+				item[propertyGetAttribute] && (content = item[propertyGetAttribute](name)) && content.indexOf(value) == 0 && this.result.push(item);
 			},[]);
 		},
 		getByAttributeLast = supportQuerySelectorAll ? function(name,value,tagName){
-			return _context.root.querySelectorAll(tagName+'['+name+'$="'+value+'"]');
+			return _context.root[propertyQuerySelectorAll](tagName+'['+name+'$="'+value+'"]');
 		} : function(name,value,tagName){
-			var matches = _context.root.getElementsByTagName(tagName || '*'),
+			var matches = _context.root[propertyGetElementsByTagName](tagName || '*'),
 				length = value.length,
 				content;	
 			
 			return forEach(matches,function(_,item){
-				item['getAttribute'] && (content = item.getAttribute(name)) && content.indexOf(value) + length == content.length && this.result.push(item);
+				item[propertyGetAttribute] && (content = item[propertyGetAttribute](name)) && content.indexOf(value) + length == content.length && this.result.push(item);
 			},[]);
 		},
 
@@ -383,19 +390,19 @@
 			},
 			attributeHas : function(string){
 				return forEach(_context.cache,function(_,item){
-					item['hasAttribute'] && item.hasAttribute(string) && this.result.push(item);
+					item[propertyHasAttribute] && item[propertyHasAttribute](string) && this.result.push(item);
 				},[]);
 			},
 			attributeEqual : function(string,value){
 				return forEach(_context.cache,function(_,item){
-					item['getAttribute'] && item.getAttribute(string) == value && this.result.push(item);
+					item[propertyGetAttribute] && item[propertyGetAttribute](string) == value && this.result.push(item);
 				},[]);
 			},
 			attributeLike : function(string,value){
 				var content;
 				
 				return forEach(_context.cache,function(_,item){
-					item['getAttribute'] && (content = item.getAttribute(string)) && content.indexOf(value) != -1 && this.result.push(item);
+					item[propertyGetAttribute] && (content = item[propertyGetAttribute](string)) && content.indexOf(value) != -1 && this.result.push(item);
 				},[]);
 			},
 			attributeSeperator : function(string,value){
@@ -403,14 +410,14 @@
 					content;
 				
 				return forEach(_context.cache,function(_,item){
-					item['getAttribute'] && (content = item.getAttribute(string)) && pattern.test(content) && this.result.push(item);
+					item[propertyGetAttribute] && (content = item[propertyGetAttribute](string)) && pattern.test(content) && this.result.push(item);
 				},[]);
 			},
 			attributeFirst : function(string,value){
 				var content;
 				
 				return forEach(_context.cache,function(_,item){
-					item['getAttribute'] && (content = item.getAttribute(string)) && content.indexOf(value) == 0 && this.result.push(item);
+					item[propertyGetAttribute] && (content = item[propertyGetAttribute](string)) && content.indexOf(value) == 0 && this.result.push(item);
 				},[]);
 			},
 			attributeLast : function(string,value){
@@ -418,7 +425,7 @@
 					content;	
 				
 				return forEach(_context.cache,function(_,item){
-					item['getAttribute'] && (content = item.getAttribute(string)) && content.indexOf(value) + length == content.length && this.result.push(item);
+					item[propertyGetAttribute] && (content = item[propertyGetAttribute](string)) && content.indexOf(value) + length == content.length && this.result.push(item);
 				},[]);
 			}
 		}))(),
@@ -615,12 +622,12 @@
 				current;
 				
 			if (!!selector){
-				return root.querySelectorAll(selector);
+				return root[propertyQuerySelectorAll](selector);
 			}
 			
 			return forEach(token.found,function(_,item){
 				if (selector = item.qSA){
-					this.result = concat(this.result,root.querySelectorAll(selector));
+					this.result = concat(this.result,root[propertyQuerySelectorAll](selector));
 				} else if (selector = next(item.found,new NodeContext(root))) {
 					this.result = concat(this.result,selector);
 				}
